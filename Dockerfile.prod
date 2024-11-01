@@ -1,0 +1,20 @@
+# Dockerfile.prod
+FROM ruby:3.3.0-slim
+
+# Install minimal production dependencies
+RUN apt-get update -qq && \
+    apt-get install -y --no-install-recommends build-essential libsqlite3-dev && \
+    rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+COPY Gemfile* /app/
+RUN bundle install --without development test
+
+COPY . /app
+
+EXPOSE 4567
+
+RUN mkdir -p /app/db /app/csv /app/archive
+
+CMD ["rackup", "-E", "production"]

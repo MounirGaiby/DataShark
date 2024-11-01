@@ -12,3 +12,5 @@ gem 'puma'
 gem 'rufus-scheduler'
 gem 'sinatra'
 gem 'sqlite3'
+
+gem "rackup", "~> 2.1"

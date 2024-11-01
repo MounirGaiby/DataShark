@@ -1,0 +1,31 @@
+services:
+  app-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - /home/mounir/docker_test/csv:/app/csv
+      - /home/mounir/docker_test/db:/app/db
+      - /home/mounir/docker_test/archive:/app/archive
+    ports:
+      - "4567:4567"
+    env_file:
+      - .env.development
+
+  app-prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    volumes:
+      - production_csv:/app/csv
+      - production_db:/app/db
+      - production_archive:/app/archive
+    ports:
+      - "4567:4567"
+    env_file:
+      - .env.production
+
+volumes:
+  production_csv:
+  production_db:
+  production_archive:
