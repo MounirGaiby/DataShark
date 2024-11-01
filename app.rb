@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/AbcSize
 require 'sinatra'
 require 'rufus-scheduler'
 require 'sqlite3'
@@ -7,6 +6,7 @@ require 'csv'
 require 'time'
 require 'net/http'
 require 'dotenv'
+require 'fileutils'
 
 Dotenv.load
 
@@ -14,10 +14,13 @@ Dotenv.load
 class App < Sinatra::Base
   configure do
     set :scheduler, Rufus::Scheduler.new
-    set :db, SQLite3::Database.new(ENV['DATABASE_PATH'] || 'read_files.db')
-    set :csv_path, ENV['CSV_PATH'] || '/home/sftpuser/time_entries/'
-    set :api_url, ENV['API_URL'] || 'http://localhost:3000/api/v1/clock_entries/bulk_create'
-    set :schedule_interval, ENV['SCHEDULE_INTERVAL'] || '5m'
+    set :db, SQLite3::Database.new(ENV['DATABASE_PATH'])
+    set :csv_path, ENV['CSV_PATH']
+    set :api_url, ENV['API_URL']
+    set :schedule_interval, ENV['SCHEDULE_INTERVAL']
+    set :archive, ENV['ARCHIVE'] || false
+    set :archive_path, ENV['ARCHIVE_PATH'] || File.join(Dir.pwd, 'archive')
+    FileUtils.mkdir_p(settings.archive_path) unless Dir.exist?(settings.archive_path)
 
     settings.db.execute <<-SQL
       CREATE TABLE IF NOT EXISTS read_files (
@@ -48,7 +51,10 @@ class App < Sinatra::Base
         if response.code == '200'
           puts "Successfully sent #{json_data.length} entries to Rails API"
           settings.db.execute('INSERT INTO read_files (filename) VALUES (?)', filename)
-          File.delete(file) if ENV['DELETE_AFTER_PROCESS'] == 'true'
+          if settings.archive
+            FileUtils.cp(file, File.join(settings.archive_path, filename))
+            File.delete(file)
+          end
         else
           puts "Error sending data to Rails API: #{response.body}"
         end
@@ -60,7 +66,6 @@ class App < Sinatra::Base
       csv.map do |row|
         row = row.to_h.transform_keys! { |key| key.strip.downcase.gsub(/\s+/, '_') }
         row.transform_values! { |value| value.is_a?(String) ? value.strip.gsub(/[\t\\]/, '') : value }
-
         {
           user_id: row['person_code'],
           time: "#{row['date']}T#{row['time']}",
@@ -89,4 +94,3 @@ class App < Sinatra::Base
     settings.scheduler.shutdown
   end
 end
-# rubocop:enable Metrics/AbcSize
