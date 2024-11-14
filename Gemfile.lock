@@ -2,9 +2,13 @@ GEM
   remote: https://rubygems.org/
   specs:
     base64 (0.2.0)
+    bcrypt (3.1.20)
+    cgi (0.4.1)
     concurrent-ruby (1.2.3)
     csv (3.3.0)
     dotenv (3.1.2)
+    erb (4.0.4)
+      cgi (>= 0.3.3)
     et-orbi (1.2.7)
       tzinfo
     fugit (1.9.0)
@@ -36,6 +40,8 @@ GEM
       rack-protection (= 4.0.0)
       rack-session (>= 2.0.0, < 3)
       tilt (~> 2.0)
+    sinatra-flash (0.3.0)
+      sinatra (>= 1.0.0)
     sqlite3 (2.0.4)
       mini_portile2 (~> 2.8.0)
     sqlite3 (2.0.4-x86_64-linux-gnu)
@@ -49,13 +55,16 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  bcrypt
   csv
   dotenv
+  erb
   json
   puma
   rackup (~> 2.1)
   rufus-scheduler
   sinatra
+  sinatra-flash
   sqlite3
 
 RUBY VERSION
