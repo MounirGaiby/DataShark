@@ -4,11 +4,10 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - /home/mounir/docker_test/csv:/app/csv
-      - /home/mounir/docker_test/db:/app/db
-      - /home/mounir/docker_test/archive:/app/archive
+      - ~/datashark/csv:/app/csv
+      - ~/datashark/archive:/app/archive
     ports:
-      - "4567:4567"
+      - "9292:9292"
     env_file:
       - .env.development
 
@@ -17,15 +16,13 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     volumes:
-      - production_csv:/app/csv
-      - production_db:/app/db
-      - production_archive:/app/archive
+      - /home/sftp_user/upload:/app/csv
+      - /home/sftp_user/archive:/app/archive
     ports:
-      - "4567:4567"
+      - "9292:9292"
     env_file:
       - .env.production
 
 volumes:
   production_csv:
-  production_db:
   production_archive:

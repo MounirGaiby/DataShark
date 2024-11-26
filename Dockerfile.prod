@@ -13,8 +13,9 @@ RUN bundle install --without development test
 
 COPY . /app
 
-EXPOSE 4567
+EXPOSE 9292
 
 RUN mkdir -p /app/db /app/csv /app/archive
+RUN ruby setup.rb
 
 CMD ["rackup", "-E", "production"]

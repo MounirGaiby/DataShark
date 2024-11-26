@@ -17,10 +17,11 @@ RUN bundle install
 COPY . /app
 
 # Expose the port the app runs on
-EXPOSE 4567
+EXPOSE 9292
 
 # Create necessary directories
 RUN mkdir -p /app/db /app/csv /app/archive
+RUN ruby setup.rb
 
 # Start the Sinatra application
 CMD ["rackup"]

@@ -9,12 +9,7 @@
 </form>
 
 <h2>Settings</h2>
-<form action="/settings" method="post">
-  <div class="form-group">
-    <label>CSV Path:</label>
-    <input type="text" name="csv_path" value="<%= @settings[:csv_path] %>">
-  </div>
-  
+<form action="/settings" method="post">  
   <div class="form-group">
     <label>API URL:</label>
     <input type="text" name="api_url" value="<%= @settings[:api_url] %>">
@@ -23,16 +18,6 @@
   <div class="form-group">
     <label>Schedule Interval:</label>
     <input type="text" name="schedule_interval" value="<%= @settings[:schedule_interval] %>">
-  </div>
-  
-  <div class="form-group">
-    <label>Archive:</label>
-    <input type="checkbox" name="archive" value="true" <%= @settings[:archive] ? 'checked' : '' %>>
-  </div>
-  
-  <div class="form-group">
-    <label>Archive Path:</label>
-    <input type="text" name="archive_path" value="<%= @settings[:archive_path] %>">
   </div>
   
   <button type="submit">Save Settings</button>

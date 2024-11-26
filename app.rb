@@ -19,15 +19,15 @@ class App < Sinatra::Base
 
   configure do
     set :scheduler, Rufus::Scheduler.new # Initialize scheduler
-    set :csv_path, ENV['CSV_PATH'] || File.join(Dir.pwd, 'csv') # Default path for CSV files
+    set :csv_path, File.join(Dir.pwd, 'csv') # Default path for CSV files
     set :api_url, ENV['API_URL'] || 'http://localhost:3000/api/v1/clock_entries/bulk' # Default API URL
     set :schedule_interval, ENV['SCHEDULE_INTERVAL'] || '1m' # Default scheduler interval
-    set :archive, ENV['ARCHIVE'] || false # Default archive setting
-    set :archive_path, ENV['ARCHIVE_PATH'] || File.join(Dir.pwd, 'archive') # Use current working directory
+    set :archive, true
+    set :archive_path, File.join(Dir.pwd, 'archive') # Use current working directory
     # Create archive directory if it doesn't exist
     FileUtils.mkdir_p(settings.archive_path) unless Dir.exist?(settings.archive_path)
     # Ensure directories exist
-    FileUtils.mkdir_p(settings.csv_path)
+    FileUtils.mkdir_p(settings.csv_path) unless Dir.exist?(settings.csv_path)
     # Generate a proper secret key
     secret_key = ENV['SESSION_SECRET'] || SecureRandom.hex(64)
     enable :sessions
@@ -197,22 +197,16 @@ class App < Sinatra::Base
     require_authentication
     @status = App.scheduler_status
     @settings = {
-      csv_path: settings.csv_path,
       api_url: settings.api_url,
       schedule_interval: settings.schedule_interval,
-      archive: settings.archive,
-      archive_path: settings.archive_path
     }
     erb :'index.html'
   end
 
   post '/settings' do
     require_authentication
-    settings.csv_path = params[:csv_path] if params[:csv_path]
     settings.api_url = params[:api_url] if params[:api_url]
     settings.schedule_interval = params[:schedule_interval] if params[:schedule_interval]
-    settings.archive = params[:archive] == 'true'
-    settings.archive_path = params[:archive_path] if params[:archive_path]
     
     redirect '/'
   end

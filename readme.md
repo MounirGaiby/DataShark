@@ -4,6 +4,7 @@ Make sure you have ruby 3.3.0.**
 
 ```
 bundle install
+ruby setup.rb
 ```
 
 **Set up the env to set up the api key and other options.**
