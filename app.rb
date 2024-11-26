@@ -22,6 +22,7 @@ class App < Sinatra::Base
     set :csv_path, File.join(Dir.pwd, 'csv') # Default path for CSV files
     set :api_url, ENV['API_URL'] || 'http://localhost:3000/api/v1/clock_entries/bulk' # Default API URL
     set :schedule_interval, ENV['SCHEDULE_INTERVAL'] || '1m' # Default scheduler interval
+    set :timezone_offset, ENV['TIMEZONE_OFFSET'] || '+01:00'
     set :archive, true
     set :archive_path, File.join(Dir.pwd, 'archive') # Use current working directory
     # Create archive directory if it doesn't exist
@@ -82,9 +83,10 @@ class App < Sinatra::Base
       csv.map do |row|
         row = row.to_h.transform_keys! { |key| key.strip.downcase.gsub(/\s+/, '_') }
         row.transform_values! { |value| value.is_a?(String) ? value.strip.gsub(/[\t\\]/, '') : value }
+        
         {
           user_id: row['person_code'],
-          time: "#{row['date']}T#{row['time']}",
+          time: "#{row['date']}T#{row['time']}#{settings.timezone_offset}",
           clock_entry_type: row['attendance_status'].downcase,
           method: row['authentication_mode'],
           device_serial: row['device_serial_no.']
