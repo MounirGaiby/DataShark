@@ -1,5 +1,6 @@
-# Use the official Ruby image from the Docker Hub
-FROM ruby:3.3.0
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+ARG RUBY_VERSION=3.3.0
+FROM public.ecr.aws/docker/library/ruby:$RUBY_VERSION-slim as base
 
 # Install dependencies
 RUN apt-get update -qq && apt-get install -y build-essential libsqlite3-dev

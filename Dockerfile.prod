@@ -1,5 +1,6 @@
-# Dockerfile.prod
-FROM ruby:3.3.0-slim
+# Make sure RUBY_VERSION matches the Ruby version in .ruby-version and Gemfile
+ARG RUBY_VERSION=3.3.0
+FROM public.ecr.aws/docker/library/ruby:$RUBY_VERSION-slim as base
 
 # Install minimal production dependencies
 RUN apt-get update -qq && \
