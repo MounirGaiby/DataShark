@@ -16,8 +16,8 @@ services:
       context: .
       dockerfile: Dockerfile.prod
     volumes:
-      - /home/sftp_user/upload:/app/csv
-      - /home/sftp_user/archive:/app/archive
+      - /home/sftpuser/upload:/app/csv
+      - /home/sftpuser/archive:/app/archive
     ports:
       - "9292:9292"
     env_file:
